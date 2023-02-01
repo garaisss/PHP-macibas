@@ -1,15 +1,11 @@
 <?php
 
-include 'Validator.php';
-
-$config = include 'config.php';
+$config = include base_path('config.php');
 $db = new Database($config['database']);
 
-$heading = 'Create Note';
+$errors = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $errors = [];
 
     if (! Validator::string($_POST['body'], 1, 300)){
         $errors['body'] = 'A Note Of No More Than 300 Characters Is Required!';}
@@ -24,4 +20,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 }
 
-include 'views/notes/create.view.php';
+view("notes/create.view.php", [
+    'heading' => 'Create Note',
+    'errors' => $errors
+]);
