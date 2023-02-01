@@ -1,6 +1,8 @@
 <?php
 
-$config = include('config.php');
+include 'Validator.php';
+
+$config = include 'config.php';
 $db = new Database($config['database']);
 
 $heading = 'Create Note';
@@ -9,14 +11,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $errors = [];
 
-    if (strlen($_POST['body']) === 0){
-        $errors['body'] = 'A Note Is Required';
-    }
-
-    if (strlen($_POST['body']) > 300){
-        $errors['body'] = 'The note is way too long, has to be under 300 characters!';
-    }
-
+    if (! Validator::string($_POST['body'], 1, 300)){
+        $errors['body'] = 'A Note Of No More Than 300 Characters Is Required!';}
+    
     if(empty($errors)) {
         $db->query('INSERT INTO notes(body, user_id) VALUES(:body, :user_id)', [
             'body' => $_POST['body'],
@@ -27,4 +24,4 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 }
 
-include 'views/note-create.view.php';
+include 'views/notes/create.view.php';
