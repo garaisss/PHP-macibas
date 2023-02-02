@@ -2,10 +2,19 @@
 
 const BASE_PATH = __DIR__ . '/../';
 
-include BASE_PATH . 'functions.php';
+include BASE_PATH . 'Core/functions.php';
 
 spl_autoload_register(function ($class) {
-    include base_path("Core/{$class}.php");
+    $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
+    include base_path("{$class}.php");
 });
 
-include base_path('router.php');
+include base_path('bootstrap.php');
+
+$router = new \Core\Router();
+$routes = require base_path('routes.php');
+
+$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
+$method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+
+$router->route($uri, $method);
